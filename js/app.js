@@ -138,6 +138,7 @@ bleBtn.addEventListener('pointerup', function(event) {
     optionalServices: [
       'ef680200-9b35-4933-9b10-52ffa9740042',
       'ef680300-9b35-4933-9b10-52ffa9740042',
+      'ef680400-9b35-4933-9b10-52ffa9740042',
     ]
   }).then(device => {
     console.log(device);
@@ -201,7 +202,7 @@ bleBtn.addEventListener('pointerup', function(event) {
         connectBtn.disabled = false;
       }
     };
-  }); 
+  });
 });
 
 function getCharacteristics(device){
