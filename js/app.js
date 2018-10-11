@@ -8,34 +8,34 @@ Buffer = Buffer.Buffer;
 let client = undefined;
 
 let UUID_MAP = {
-  'ef6801009b3549339b1052ffa9740042': 'TCS_UUID',
-  'ef6802009b3549339b1052ffa9740042': 'TES_UUID',
-  'ef6802019b3549339b1052ffa9740042': 'TES_TEMP_UUID',
-  'ef6802029b3549339b1052ffa9740042': 'TES_PRESS_UUID',
-  'ef6802039b3549339b1052ffa9740042': 'TES_HUMID_UUID',
-  'ef6802049b3549339b1052ffa9740042': 'TES_GAS_UUID',
-  'ef6802059b3549339b1052ffa9740042': 'TES_COLOR_UUID',
-  'ef6802069b3549339b1052ffa9740042': 'TES_CONF_UUID',
-  'ef6803009b3549339b1052ffa9740042': 'UIS_UUID',
-  'ef6803019b3549339b1052ffa9740042': 'UIS_LED_UUID',
-  'ef6803029b3549339b1052ffa9740042': 'UIS_BTN_UUID',
-  'ef6803039b3549339b1052ffa9740042': 'UIS_PIN_UUID',
-  'ef6804009b3549339b1052ffa9740042': 'TMS_UUID',
-  'ef6804019b3549339b1052ffa9740042': 'TMS_CONF_UUID',
-  'ef6804029b3549339b1052ffa9740042': 'TMS_TAP_UUID',
-  'ef6804039b3549339b1052ffa9740042': 'TMS_ORIENTATION_UUID',
-  'ef6804049b3549339b1052ffa9740042': 'TMS_QUATERNION_UUID',
-  'ef6804059b3549339b1052ffa9740042': 'TMS_STEP_COUNTER_UUID',
-  'ef6804069b3549339b1052ffa9740042': 'TMS_RAW_DATA_UUID',
-  'ef6804079b3549339b1052ffa9740042': 'TMS_EULER_UUID',
-  'ef6804089b3549339b1052ffa9740042': 'TMS_ROTATION_UUID',
-  'ef6804099b3549339b1052ffa9740042': 'TMS_HEADING_UUID',
-  'ef68040a9b3549339b1052ffa9740042': 'TMS_GRAVITY_UUID',
-  'ef6805009b3549339b1052ffa9740042': 'TSS_UUID',
-  'ef6805019b3549339b1052ffa9740042': 'TSS_CONF_UUID',
-  'ef6805029b3549339b1052ffa9740042': 'TSS_SPEAKER_DATA_UUID',
-  'ef6805039b3549339b1052ffa9740042': 'TSS_SPEAKER_STAT_UUID',
-  'ef6805049b3549339b1052ffa9740042': 'TSS_MIC_UUID'
+  'ef6801009b3549339b1052ffa9740042': 'TCS',
+  'ef6802009b3549339b1052ffa9740042': 'TES',
+  'ef6802019b3549339b1052ffa9740042': 'TES_TEMP',
+  'ef6802029b3549339b1052ffa9740042': 'TES_PRESS',
+  'ef6802039b3549339b1052ffa9740042': 'TES_HUMID',
+  'ef6802049b3549339b1052ffa9740042': 'TES_GAS',
+  'ef6802059b3549339b1052ffa9740042': 'TES_COLOR',
+  'ef6802069b3549339b1052ffa9740042': 'TES_CONF',
+  'ef6803009b3549339b1052ffa9740042': 'UIS',
+  'ef6803019b3549339b1052ffa9740042': 'UIS_LED',
+  'ef6803029b3549339b1052ffa9740042': 'UIS_BTN',
+  'ef6803039b3549339b1052ffa9740042': 'UIS_PIN',
+  'ef6804009b3549339b1052ffa9740042': 'TMS',
+  'ef6804019b3549339b1052ffa9740042': 'TMS_CONF',
+  'ef6804029b3549339b1052ffa9740042': 'TMS_TAP',
+  'ef6804039b3549339b1052ffa9740042': 'TMS_ORIENTATION',
+  'ef6804049b3549339b1052ffa9740042': 'TMS_QUATERNION',
+  'ef6804059b3549339b1052ffa9740042': 'TMS_STEP_COUNTER',
+  'ef6804069b3549339b1052ffa9740042': 'TMS_RAW_DATA',
+  'ef6804079b3549339b1052ffa9740042': 'TMS_EULER',
+  'ef6804089b3549339b1052ffa9740042': 'TMS_ROTATION',
+  'ef6804099b3549339b1052ffa9740042': 'TMS_HEADING',
+  'ef68040a9b3549339b1052ffa9740042': 'TMS_GRAVITY',
+  'ef6805009b3549339b1052ffa9740042': 'TSS',
+  'ef6805019b3549339b1052ffa9740042': 'TSS_CONF',
+  'ef6805029b3549339b1052ffa9740042': 'TSS_SPEAKER_DATA',
+  'ef6805039b3549339b1052ffa9740042': 'TSS_SPEAKER_STAT',
+  'ef6805049b3549339b1052ffa9740042': 'TSS_MIC'
 }
 
 let deviceMap = {}
@@ -126,13 +126,13 @@ function createDeviceElement(characteristics){
   let sUl = document.createElement("UL");
   for (var service in characteristics) {
     let sLi = document.createElement("LI");
-    sLi.appendChild(document.createTextNode(service));
+    sLi.appendChild(document.createTextNode(lookupServiceName(service)));
     sUl.appendChild(sLi);
     let cUl = document.createElement("UL");
     sUl.appendChild(cUl);
     characteristics[service].forEach(characteristic => {
       let cLi = document.createElement("LI");
-      cLi.appendChild(document.createTextNode(characteristic.uuid));
+      cLi.appendChild(document.createTextNode(lookupServiceName(characteristic.uuid)));
 
       let input = Object.assign(document.createElement("input"),{
         type:'checkbox', checked:characteristic.properties.read, disabled:true});
@@ -160,6 +160,15 @@ function createDeviceElement(characteristics){
     });
   }
   return sUl;
+}
+
+function lookupServiceName(uuid){
+  key = uuid.replace(/-/g, '');
+  if(key in UUID_MAP){
+    return UUID_MAP[key];
+  } else {
+    return uuid;
+  }
 }
 
 bleBtn.addEventListener('pointerup', function(event) {
