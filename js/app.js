@@ -182,7 +182,7 @@ bleBtn.addEventListener('pointerup', function(event) {
     ]
   }).then(device => {
     console.log(device);
-    const deviceUri = escape(device.id);
+    const deviceUri = escape(device.name);
     deviceMap[deviceUri] = device;
 
     let deviceRow = Object.assign(document.createElement("div"), {className:'row device'});
@@ -273,7 +273,7 @@ function handleCharacteristic(characteristic) {
     characteristic.addEventListener('characteristicvaluechanged', e => {
       const view = e.target.value;
       if (client && client.connected) {
-        const deviceUri = escape(characteristic.service.device.id);
+        const deviceUri = escape(characteristic.service.device.name);
         client.publish(deviceUri + '/' + characteristic.service.uuid +
                                    '/' + characteristic.uuid, Buffer.from(view.buffer));
       }
